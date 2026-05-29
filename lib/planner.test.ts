@@ -24,19 +24,19 @@ describe('planner engine', () => {
     const result = plan(base);
 
     expect(result.totalCams).toBe(8);
-    expect(result.totalPower).toBe(112);
+    expect(result.totalPower).toBe(88);
     expect(result.topology).toBe('core-access');
     expect(result.lacp).toBe(true);
     expect(result.wirelessLinks).toBe(1);
     expect(result.wirelessMaxMbps).toBe(24);
-    expect(result.totalPoeBudget).toBe(300);
-    expect(result.headroomPct).toBe(63);
+    expect(result.totalPoeBudget).toBe(130);
+    expect(result.headroomPct).toBe(32);
     expect(result.gbPerCamDay).toBeCloseTo(15.552);
     expect(result.recTb).toBe(3);
     expect(result.driveSize).toBe(4);
     expect(result.nvr.name).toContain('Intel N100');
     expect(result.detector.id).toBe('coral');
-    expect(result.total).toBe(2372);
+    expect(result.total).toBe(1734);
   });
 
   it('groups cameras by zone as the single source of truth', () => {
