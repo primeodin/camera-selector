@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="pol-spectrum" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38BDF8"></stop>
+      <stop offset="0.55" stop-color="#7C5CF5"></stop>
+      <stop offset="1" stop-color="#F97316"></stop>
+    </linearGradient>
+    <radialGradient id="pol-iris" cx="32" cy="32" r="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"></stop>
+      <stop offset="0.55" stop-color="#F2F5FB"></stop>
+      <stop offset="0.9" stop-color="#E6EBF3"></stop>
+    </radialGradient>
+  </defs>
+  
+  <circle cx="32" cy="32" r="29" stroke="url(#pol-spectrum)" stroke-width="2"></circle>
+  <circle cx="32" cy="32" r="22" fill="url(#pol-iris)" stroke="#7C5CF5" stroke-opacity="0.30"></circle>
+  
+  <path d="M32 14 L48 42 L16 42 Z" stroke="url(#pol-spectrum)" stroke-width="1.5" stroke-linejoin="round"></path>
+  
+  <circle cx="32" cy="32" r="3.5" fill="url(#pol-spectrum)"></circle>
+</svg>
