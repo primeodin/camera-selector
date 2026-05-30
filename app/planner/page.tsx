@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Download, FileCode2, Moon, Plus, Printer, Sun, Trash2, Wifi } from 'lucide-react';
+import { Download, FileCode2, ImageUp, Moon, Plus, Printer, Sun, Trash2, Wifi, X } from 'lucide-react';
 import { CAM, RES, clamp, deriveClusters, frigateConfig, money, plan } from '@/lib/planner';
+import { cameraVisionProfile, revokeBlueprintPreview } from '@/lib/site-plan';
+import type { BlueprintPreview } from '@/lib/site-plan';
 import type { Camera, CameraType, LinkType, QualityTier, RecordMode, Resolution, Settings, Zone } from '@/lib/planner.types';
 
 const initialZones: Zone[] = [
@@ -22,6 +24,10 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 function uid(prefix: string) { return `${prefix}-${Math.random().toString(36).slice(2, 8)}`; }
 function aimAt(x: number, y: number) { return Math.round((Math.atan2(0.5 - x, -(0.5 - y)) * 180) / Math.PI); }
+function fovPath(x: number, y: number, range: number, angle: number) {
+  const spread = Math.min(230, Math.tan((angle / 2) * Math.PI / 180) * range);
+  return `M${x} ${y} L${x - spread} ${y + range} Q${x} ${y + range * 1.14} ${x + spread} ${y + range} Z`;
+}
 
 export default function PlannerPage() {
   const [theme, setTheme] = useState<'light'|'dark'>('light');
@@ -30,10 +36,27 @@ export default function PlannerPage() {
   const [activeZone, setActiveZone] = useState('house');
   const [armedType, setArmedType] = useState<CameraType>('standard');
   const [view, setView] = useState<'site'|'results'>('site');
+  const [blueprint, setBlueprint] = useState<BlueprintPreview | null>(null);
+  const blueprintRef = useRef<BlueprintPreview | null>(null);
   const [settings, setSettings] = useState<Settings>({ resolution: '4mp', recordMode: 'event', retention: 14, tier: 'better' });
   const clusters = useMemo(() => deriveClusters(zones, cameras), [zones, cameras]);
   const result = useMemo(() => plan({ ...settings, clusters }), [settings, clusters]);
   const yaml = useMemo(() => frigateConfig({ ...settings, clusters }, result), [settings, clusters, result]);
+
+  useEffect(() => { blueprintRef.current = blueprint; }, [blueprint]);
+  useEffect(() => () => revokeBlueprintPreview(blueprintRef.current), []);
+
+  const loadBlueprint = (file: File) => {
+    const next = { name: file.name, url: URL.createObjectURL(file) };
+    setBlueprint((current) => {
+      revokeBlueprintPreview(current);
+      return next;
+    });
+  };
+  const clearBlueprint = () => setBlueprint((current) => {
+    revokeBlueprintPreview(current);
+    return null;
+  });
 
   const addCamera = (zoneId = activeZone, type = armedType, x?: number, y?: number) => setCameras((cs) => [...cs, { id: uid('cam'), zoneId, type, x: x ?? .45 + Math.random() * .1, y: y ?? .45 + Math.random() * .1, angle: aimAt(x ?? .5, y ?? .5) }]);
   const removeCameraOfType = (zoneId: string, type: CameraType) => setCameras((cs) => { const idx = [...cs].reverse().findIndex(c => c.zoneId === zoneId && c.type === type); if (idx < 0) return cs; const real = cs.length - 1 - idx; return cs.filter((_, i) => i !== real); });
@@ -71,7 +94,7 @@ export default function PlannerPage() {
           <div className="planner-actions" style={{ display:'flex', gap: 8, flexWrap:'wrap' }}><button className="btn" onClick={()=>setTheme(theme==='light'?'dark':'light')}>{theme==='light'?<Moon size={16}/>:<Sun size={16}/>} Theme</button><button className="btn" onClick={exportBom}><Download size={16}/> Export BOM</button><button className="btn" onClick={()=>window.print()}><Printer size={16}/> Export plan</button></div>
         </header>
         <div className="planner-tabs" style={{ display: 'flex', gap: 8, margin: '14px 0' }}><button className={`btn ${view==='site'?'primary':''}`} onClick={()=>setView('site')}>Site plan</button><button className={`btn ${view==='results'?'primary':''}`} onClick={()=>setView('results')}>Results</button></div>
-        {view === 'site' ? <SitePlan zones={zones} cameras={cameras} activeZone={activeZone} armedType={armedType} setArmedType={setArmedType} addCamera={addCamera} updateCamera={updateCamera} removeCamera={removeCamera} setActiveZone={setActiveZone}/> : <Results result={result} yaml={yaml}/>} 
+        {view === 'site' ? <SitePlan zones={zones} cameras={cameras} activeZone={activeZone} armedType={armedType} blueprint={blueprint} setArmedType={setArmedType} addCamera={addCamera} updateCamera={updateCamera} removeCamera={removeCamera} setActiveZone={setActiveZone} loadBlueprint={loadBlueprint} clearBlueprint={clearBlueprint}/> : <Results result={result} yaml={yaml}/>} 
       </section>
     </div>
     <style jsx global>{`
@@ -113,17 +136,42 @@ export default function PlannerPage() {
 
 function Setting({ label, children }: { label: string; children: React.ReactNode }) { return <div style={{ marginTop: 14 }}><div className="muted" style={{ marginBottom: 8 }}>{label}</div><div style={{ display:'flex', gap: 8, flexWrap:'wrap' }}>{children}</div></div>; }
 
-function SitePlan({ zones, cameras, activeZone, armedType, setArmedType, addCamera, updateCamera, removeCamera, setActiveZone }: { zones: Zone[]; cameras: Camera[]; activeZone: string; armedType: CameraType; setArmedType: (t: CameraType)=>void; addCamera: (z?: string,t?: CameraType,x?:number,y?:number)=>void; updateCamera: (id:string,p:Partial<Camera>)=>void; removeCamera:(id:string)=>void; setActiveZone:(id:string)=>void }) {
+function SitePlan({ zones, cameras, activeZone, armedType, blueprint, setArmedType, addCamera, updateCamera, removeCamera, setActiveZone, loadBlueprint, clearBlueprint }: { zones: Zone[]; cameras: Camera[]; activeZone: string; armedType: CameraType; blueprint: BlueprintPreview | null; setArmedType: (t: CameraType)=>void; addCamera: (z?: string,t?: CameraType,x?:number,y?:number)=>void; updateCamera: (id:string,p:Partial<Camera>)=>void; removeCamera:(id:string)=>void; setActiveZone:(id:string)=>void; loadBlueprint:(file: File)=>void; clearBlueprint:()=>void }) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) loadBlueprint(file);
+    event.target.value = '';
+  };
+
   return <div className="glass card site-plan-card" style={{ padding: 16 }}>
-    <div className="planner-toolbar" style={{ display:'flex', justifyContent:'space-between', gap:12, flexWrap:'wrap', marginBottom:12 }}><input aria-label="Address" placeholder="Enter address or project name" className="btn address-input" style={{ justifyContent:'flex-start', minWidth: 280 }}/><div className="chip-row" style={{ display:'flex', gap:8 }}>{(['standard','ptz','highpower'] as CameraType[]).map(t=><button key={t} className={`btn ${armedType===t?'primary':''}`} onClick={()=>setArmedType(t)}>{CAM[t].label}</button>)}</div></div>
+    <div className="planner-toolbar" style={{ display:'flex', justifyContent:'space-between', gap:12, flexWrap:'wrap', marginBottom:12 }}>
+      <input aria-label="Address" placeholder="Enter address or project name" className="btn address-input" style={{ justifyContent:'flex-start', minWidth: 280 }}/>
+      <div className="chip-row" style={{ display:'flex', gap:8 }}>
+        <input ref={fileInputRef} aria-label="Upload blueprint image" type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }}/>
+        <button className="btn" onClick={()=>fileInputRef.current?.click()}><ImageUp size={16}/> {blueprint ? 'Replace blueprint' : 'Upload blueprint'}</button>
+        {blueprint && <button className="btn" onClick={clearBlueprint}><X size={16}/> Clear</button>}
+        {(['standard','ptz','highpower'] as CameraType[]).map(t=><button key={t} className={`btn ${armedType===t?'primary':''}`} onClick={()=>setArmedType(t)}>{CAM[t].label}</button>)}
+      </div>
+    </div>
+    {blueprint && <p className="muted" style={{ marginTop: -2, marginBottom: 12 }}>Using local blueprint: <b>{blueprint.name}</b>. It stays in this browser and is not uploaded.</p>}
     <div className="chip-row" style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:12 }}>{zones.map((z,i)=><button key={z.id} className={`btn ${activeZone===z.id?'primary':''}`} onClick={()=>setActiveZone(z.id)}>{z.link==='wireless'&&<Wifi size={14}/>}<span style={{ color: zoneColors[i%zoneColors.length] }}>●</span> {z.name}</button>)}</div>
     <svg viewBox="0 0 1000 560" className="card site-plan-svg" onClick={(e)=>{ const r=(e.currentTarget as SVGSVGElement).getBoundingClientRect(); addCamera(activeZone, armedType, (e.clientX-r.left)/r.width, (e.clientY-r.top)/r.height); }} style={{ width:'100%', background:'linear-gradient(140deg,#eef8ff,#fff7ed)', border:'1px solid var(--line)' }}>
-      <path d="M120 80 L830 58 L910 420 L260 510 Z" fill="rgba(255,255,255,.74)" stroke="rgba(14,20,36,.14)" strokeWidth="5" />
-      <path d="M310 160 h260 v160 h-260z" fill="rgba(14,143,204,.1)" stroke="rgba(14,143,204,.3)" strokeWidth="3" />
-      <text x="54" y="520" fill="#6b7591" fontSize="24">Schematic preview · connect Google Maps for satellite imagery</text>
-      {cameras.map((c)=>{ const zoneIndex = Math.max(0,zones.findIndex(z=>z.id===c.zoneId)); const color = CAM[c.type].label === 'PTZ' ? '#6b4deb' : c.type === 'highpower' ? '#e5680a' : '#0e8fcc'; const x=c.x*1000, y=c.y*560; return <g className="camera-marker" key={c.id} onClick={(e)=>e.stopPropagation()} onPointerDown={(e)=>{ const svg=e.currentTarget.ownerSVGElement!; const move=(ev:PointerEvent)=>{ const r=svg.getBoundingClientRect(); updateCamera(c.id,{x:clamp((ev.clientX-r.left)/r.width,.02,.98), y:clamp((ev.clientY-r.top)/r.height,.02,.98)});}; const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);}; window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); }}>
-        <path d={`M${x} ${y} l-70 120 a140 140 0 0 1 140 0z`} transform={`rotate(${c.angle} ${x} ${y})`} fill={color} opacity=".16"/><circle cx={x} cy={y} r="30" fill="white" stroke={zoneColors[zoneIndex%zoneColors.length]} strokeWidth="7"/><circle cx={x} cy={y} r="16" fill={color}/><title>{`${c.type} · drag to move`}</title><foreignObject className="camera-actions" x={x+34} y={y-44} width="172" height="88"><div className="stat" style={{padding:6, fontSize:11}}><button onClick={()=>updateCamera(c.id,{angle:c.angle-20})}>↺</button><button onClick={()=>updateCamera(c.id,{angle:c.angle+20})}>↻</button><button onClick={()=>removeCamera(c.id)}>Remove</button></div></foreignObject></g>})}
+      {blueprint ? <image href={blueprint.url} x="0" y="0" width="1000" height="560" preserveAspectRatio="xMidYMid slice" opacity=".9"/> : <>
+        <path d="M120 80 L830 58 L910 420 L260 510 Z" fill="rgba(255,255,255,.74)" stroke="rgba(14,20,36,.14)" strokeWidth="5" />
+        <path d="M310 160 h260 v160 h-260z" fill="rgba(14,143,204,.1)" stroke="rgba(14,143,204,.3)" strokeWidth="3" />
+        <text x="54" y="520" fill="#6b7591" fontSize="24">Schematic preview · upload a blueprint or satellite screenshot</text>
+      </>}
+      <rect x="0" y="0" width="1000" height="560" fill="url(#site-grid)" opacity={blueprint ? '.22' : '.34'} pointerEvents="none"/>
+      <defs><pattern id="site-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(14,20,36,.13)" strokeWidth="1"/></pattern></defs>
+      {cameras.map((c)=>{ const zoneIndex = Math.max(0,zones.findIndex(z=>z.id===c.zoneId)); const color = CAM[c.type].label === 'PTZ' ? '#6b4deb' : c.type === 'highpower' ? '#e5680a' : '#0e8fcc'; const profile = cameraVisionProfile(c.type); const x=c.x*1000, y=c.y*560; return <g className="camera-marker" key={c.id} onClick={(e)=>e.stopPropagation()} onPointerDown={(e)=>{ const svg=e.currentTarget.ownerSVGElement!; const move=(ev:PointerEvent)=>{ const r=svg.getBoundingClientRect(); updateCamera(c.id,{x:clamp((ev.clientX-r.left)/r.width,.02,.98), y:clamp((ev.clientY-r.top)/r.height,.02,.98)});}; const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);}; window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); }}>
+        <path d={fovPath(x, y, profile.range, profile.angle)} transform={`rotate(${c.angle} ${x} ${y})`} fill={color} opacity=".18" stroke={color} strokeWidth="2" strokeDasharray={c.type==='ptz'?'8 8':'0'}/>
+        <circle cx={x} cy={y} r={profile.range} fill="none" stroke={color} opacity=".12" strokeWidth="2"/>
+        <circle cx={x} cy={y} r="30" fill="white" stroke={zoneColors[zoneIndex%zoneColors.length]} strokeWidth="7"/><circle cx={x} cy={y} r="16" fill={color}/><title>{`${profile.label} · drag to move`}</title><foreignObject className="camera-actions" x={x+34} y={y-44} width="172" height="88"><div className="stat" style={{padding:6, fontSize:11}}><button onClick={()=>updateCamera(c.id,{angle:c.angle-20})}>↺</button><button onClick={()=>updateCamera(c.id,{angle:c.angle+20})}>↻</button><button onClick={()=>removeCamera(c.id)}>Remove</button></div></foreignObject></g>})}
     </svg>
+    <div className="fov-legend" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
+      {(['standard','ptz','highpower'] as CameraType[]).map((type) => { const profile = cameraVisionProfile(type); const color = type === 'ptz' ? '#6b4deb' : type === 'highpower' ? '#e5680a' : '#0e8fcc'; return <span key={type} className="muted" style={{ display:'inline-flex', alignItems:'center', gap:6 }}><span style={{ width:18, height:10, borderRadius:99, background:color, opacity:.22, border:`1px solid ${color}` }}/>{CAM[type].label}: {profile.label}</span>; })}
+    </div>
   </div>;
 }
 

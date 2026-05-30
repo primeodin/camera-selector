@@ -8,6 +8,8 @@ The app helps a homeowner or installer sketch a Frigate-based camera system, pla
 - storage and retention
 - wired/wireless topology
 - NVR and detector class
+- local blueprint/floor-plan image upload for camera placement
+- visual field-of-view overlays by camera class
 - costed bill of materials
 - starter Frigate `config.yml`
 
