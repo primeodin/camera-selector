@@ -27,7 +27,7 @@ export default function HomePage() {
         <Link href="/planner" className="btn primary">Open the planner →</Link>
       </nav>
 
-      <section className="container" style={{ padding: '104px 0 72px', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(360px,.82fr)', gap: 32, alignItems: 'center' }}>
+      <section className="container hero-section" style={{ padding: '104px 0 72px', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(360px,.82fr)', gap: 32, alignItems: 'center' }}>
         <div>
           <div className="btn ghost" style={{ marginBottom: 18 }}>Built for Frigate · open-source NVR</div>
           <h1 className="display" style={{ fontSize: 'clamp(54px, 9vw, 112px)', lineHeight: .86, margin: 0 }}>Your camera system,<br /><span className="gradient-text serif">planned in minutes.</span></h1>
