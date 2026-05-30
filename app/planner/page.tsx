@@ -18,6 +18,7 @@ const initialCameras: Camera[] = [
   { id: 'cam-5', zoneId: 'barn', type: 'standard', x: .82, y: .7, angle: 310 },
 ];
 const zoneColors = ['#0e8fcc', '#6b4deb', '#e5680a', '#0f9d6b', '#d6353f'];
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 function uid(prefix: string) { return `${prefix}-${Math.random().toString(36).slice(2, 8)}`; }
 function aimAt(x: number, y: number) { return Math.round((Math.atan2(0.5 - x, -(0.5 - y)) * 180) / Math.PI); }
@@ -47,7 +48,7 @@ export default function PlannerPage() {
   return <main data-theme={theme} style={{ minHeight: '100vh', padding: 16 }}>
     <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 16 }} className="planner-grid">
       <aside className="glass card" style={{ padding: 18, position: 'sticky', top: 16, height: 'calc(100vh - 32px)', overflow: 'auto' }}>
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 900 }}><img src="/assets/logo-mark.svg" alt="" width={36}/><span>PrimeOdin</span></Link>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 900 }}><img src={`${basePath}/assets/logo-mark.svg`} alt="" width={36}/><span>PrimeOdin</span></Link>
         <p className="eyebrow" style={{ marginTop: 24 }}>Locations & cameras</p>
         <div className="grid">
           {zones.map((zone, i) => <div key={zone.id} className="stat" style={{ borderColor: activeZone === zone.id ? zoneColors[i % zoneColors.length] : 'var(--line)' }} onClick={() => setActiveZone(zone.id)}>

@@ -11,13 +11,14 @@ const features = [
 ] as const;
 
 const steps = ['Map property', 'Place cameras', 'Get network', 'Export build'];
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 export default function HomePage() {
   return (
     <main>
       <nav className="container glass pill" style={{ position: 'sticky', top: 16, zIndex: 10, marginTop: 16, padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 800 }}>
-          <img src="/assets/logo-mark.svg" alt="PrimeOdin" width={34} height={34} />
+          <img src={`${basePath}/assets/logo-mark.svg`} alt="PrimeOdin" width={34} height={34} />
           <span>PrimeOdin</span><span className="muted hide-mobile">NVR Planner</span>
         </Link>
         <div className="hide-mobile" style={{ display: 'flex', gap: 20, color: 'var(--muted)', fontWeight: 600 }}>
@@ -34,7 +35,7 @@ export default function HomePage() {
           <p className="muted" style={{ maxWidth: 650, fontSize: 18, lineHeight: 1.7 }}>Place IP cameras, choose resolution and retention, then get PoE power, storage, topology, a costed BOM, and a starter Frigate config without spreadsheet drift.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 30 }}><Link className="btn primary" href="/planner">Start planning</Link><a className="btn" href="#features">See features</a></div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, marginTop: 26, color: 'var(--slate)', fontWeight: 600 }}>
-            {['No account required', 'Shareable phase-one plan', 'Frigate-first logic'].map((t) => <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><CheckCircle2 size={18} color="var(--success)" /> {t}</span>)}
+            {['No account required', 'Exportable phase-one plan', 'Frigate-first logic'].map((t) => <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><CheckCircle2 size={18} color="var(--success)" /> {t}</span>)}
           </div>
         </div>
         <div className="glass card" style={{ padding: 16 }}>
@@ -50,8 +51,8 @@ export default function HomePage() {
 
       <section id="how" className="container" style={{ padding: '60px 0' }}><p className="eyebrow">How it works</p><div className="grid" style={{ gridTemplateColumns: 'repeat(4,1fr)' }}>{steps.map((s,i)=><div className="glass card" style={{ padding: 22 }} key={s}><span className="mono muted">0{i+1}</span><h3>{s}</h3><p className="muted">A focused step that keeps the plan editable and grounded in equipment constraints.</p></div>)}</div></section>
       <section id="features" className="container" style={{ padding: '60px 0' }}><p className="eyebrow">Features</p><h2 className="display" style={{ fontSize: 48, marginTop: 0 }}>Everything needed before buying hardware.</h2><div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>{features.map(([title, body, Icon])=><div className="stat" key={title} style={{ padding: 24 }}><div className="pill" style={{ width: 44, height: 44, display: 'grid', placeItems: 'center', background: 'var(--spectrum)', color: 'white' }}><Icon size={22}/></div><h3>{title}</h3><p className="muted">{body}</p></div>)}</div></section>
-      <section className="container glass card" style={{ padding: 40, margin: '60px auto' }}><ShieldCheck color="var(--accent)"/><h2 className="display" style={{ fontSize: 44, margin: '12px 0' }}>Start planning your system</h2><p className="muted">The MVP is local-first: your plan lives in the browser until you export or share it.</p><Link href="/planner" className="btn primary">Open the planner →</Link></section>
-      <section id="faq" className="container" style={{ padding: '40px 0 90px' }}><p className="eyebrow">FAQ</p><div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>{['Real maps? The production surface has a blueprint upload and a schematic fallback; Google Maps/Mapbox keys can be wired server-side.', 'Price accuracy? Catalogue values are documented estimates and should be dated before affiliate or launch use.', 'Camera support? Standard, PTZ, and PoE++ classes cover most first-pass planning.', 'Data storage? This version keeps state client-side and exports BOM/config locally.'].map((f)=><div className="glass card" style={{ padding: 22 }} key={f}>{f}</div>)}</div></section>
+      <section className="container glass card" style={{ padding: 40, margin: '60px auto' }}><ShieldCheck color="var(--accent)"/><h2 className="display" style={{ fontSize: 44, margin: '12px 0' }}>Start planning your system</h2><p className="muted">The MVP is local-first: your plan lives in the browser until you export the bill of materials.</p><Link href="/planner" className="btn primary">Open the planner →</Link></section>
+      <section id="faq" className="container" style={{ padding: '40px 0 90px' }}><p className="eyebrow">FAQ</p><div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))' }}>{['Real maps? This version uses a schematic site plan. Google Maps, Mapbox, or blueprint upload can be added later with server-side key handling.', 'Price accuracy? Catalogue values are documented estimates and should be dated before affiliate or launch use.', 'Camera support? Standard, PTZ, and PoE++ classes cover most first-pass planning.', 'Data storage? This version keeps state client-side and exports BOM/config locally.'].map((f)=><div className="glass card" style={{ padding: 22 }} key={f}>{f}</div>)}</div></section>
       <footer className="container muted" style={{ borderTop: '1px solid var(--line)', padding: '26px 0 50px', display:'flex', justifyContent:'space-between' }}><span>PrimeOdin NVR Planner</span><span>Estimates only; validate codes, loads, and Frigate schema before install.</span></footer>
     </main>
   );

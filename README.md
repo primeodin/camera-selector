@@ -13,8 +13,10 @@ The app helps a homeowner or installer sketch a Frigate-based camera system, pla
 
 ## Surfaces
 
-- `/` — public marketing/landing page
-- `/planner` — interactive planning app
+- Local `/` — public marketing/landing page
+- Local `/planner` — interactive planning app
+- GitHub Pages: https://primeodin.github.io/camera-selector/
+- GitHub Pages planner: https://primeodin.github.io/camera-selector/planner/
 
 ## Tech stack
 
@@ -24,6 +26,7 @@ The app helps a homeowner or installer sketch a Frigate-based camera system, pla
 - Pure planning engine in `lib/planner.ts`
 - Vitest coverage for the calculation contract
 - GitHub Actions CI for typecheck, tests, and production build
+- GitHub Pages deployment for the static exported site
 
 ## Getting started
 
@@ -93,4 +96,4 @@ The current implementation is a strong MVP that replaces the prototype's in-brow
 
 ## Repository policy
 
-This repo is created under the authenticated `primeodin` GitHub account and is private by default until the owner approves public launch.
+The repository is public so GitHub Pages can serve the app at the project URL. Do not commit secrets, private customer data, or account credentials.
