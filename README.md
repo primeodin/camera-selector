@@ -99,3 +99,20 @@ The current implementation is a strong MVP that replaces the prototype's in-brow
 ## Repository policy
 
 The repository is public so GitHub Pages can serve the app at the project URL. Do not commit secrets, private customer data, or account credentials.
+
+
+## Daily builds series
+
+Tiny, tested teaching repos — starter → mid. Ship one, read it, then climb:
+
+| Lane | Repo | Why open it |
+| --- | --- | --- |
+| Systems DIY (this) | [camera-selector](https://github.com/primeodin/camera-selector) | NVR/Frigate camera planning — [live](https://primeodin.github.io/camera-selector/) |
+| Starter | [first-commit-ai](https://github.com/primeodin/first-commit-ai) | Mock-first chat CLI + pytest |
+| Attention mid | [attention-warrior](https://github.com/primeodin/attention-warrior) | Transformer attention you can hold in one hand |
+| Shop skills | [mister-jay](https://github.com/primeodin/mister-jay) | Interactive DIY drills — [live](https://primeodin.github.io/mister-jay/) |
+| Literacy (Sinhala) | [jay-ai-sinhala](https://github.com/primeodin/jay-ai-sinhala) | Friends 70+ learning GitHub + AI — [live](https://primeodin.github.io/jay-ai-sinhala/) |
+
+Coming next on the weekday cadence: RAG starter → tool agent → prompt lab → embeddings → vision → memory → shop-skill explainer.
+
+Good first issues: [#1](https://github.com/primeodin/camera-selector/issues/1) start-here Frigate walkthrough, [#2](https://github.com/primeodin/camera-selector/issues/2) keyboard + focus a11y, [#3](https://github.com/primeodin/camera-selector/issues/3) CONTRIBUTING.md. Profile forge: [github.com/primeodin](https://github.com/primeodin)
