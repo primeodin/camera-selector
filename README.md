@@ -103,17 +103,19 @@ The repository is public so GitHub Pages can serve the app at the project URL. D
 
 ## Daily builds series
 
-Tiny, tested teaching repos — starter → mid. Ship one, read it, then climb:
+Tiny, tested teaching repos — starter → craft. Ship one, read it, then climb:
 
 | Lane | Repo | Why open it |
 | --- | --- | --- |
-| Systems DIY (this) | [camera-selector](https://github.com/primeodin/camera-selector) | NVR/Frigate camera planning — [live](https://primeodin.github.io/camera-selector/) |
 | Starter | [first-commit-ai](https://github.com/primeodin/first-commit-ai) | Mock-first chat CLI + pytest |
+| Starter RAG | [notes-rag](https://github.com/primeodin/notes-rag) | Retrieve, cite, answer over Markdown notes |
+| Starter tokenizer | [tiny-bpe-tokenizer](https://github.com/primeodin/tiny-bpe-tokenizer) | Watch text become token IDs — train, encode, decode |
 | Attention mid | [attention-warrior](https://github.com/primeodin/attention-warrior) | Transformer attention you can hold in one hand |
 | Shop skills | [mister-jay](https://github.com/primeodin/mister-jay) | Interactive DIY drills — [live](https://primeodin.github.io/mister-jay/) |
 | Literacy (Sinhala) | [jay-ai-sinhala](https://github.com/primeodin/jay-ai-sinhala) | Friends 70+ learning GitHub + AI — [live](https://primeodin.github.io/jay-ai-sinhala/) |
+| Systems DIY (this) | [camera-selector](https://github.com/primeodin/camera-selector) | NVR/Frigate camera planning — [live](https://primeodin.github.io/camera-selector/) |
 
-Daily AI builds already shipped: [first-commit-ai](https://github.com/primeodin/first-commit-ai) · [notes-rag](https://github.com/primeodin/notes-rag) · [tiny-bpe-tokenizer](https://github.com/primeodin/tiny-bpe-tokenizer). Next on the weekday cadence: tiny tool-calling agent → prompt lab → embeddings → vision → memory → shop-skill explainer.
+Weekday cadence, in order: chat CLI → RAG → tokenizer (shipped) → tool agent → prompt lab → embeddings → vision → memory → shop-skill explainer. Live demos stay up front on craft repos.
 
 ## Help / good first issues
 
