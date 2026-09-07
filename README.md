@@ -113,6 +113,14 @@ Tiny, tested teaching repos — starter → mid. Ship one, read it, then climb:
 | Shop skills | [mister-jay](https://github.com/primeodin/mister-jay) | Interactive DIY drills — [live](https://primeodin.github.io/mister-jay/) |
 | Literacy (Sinhala) | [jay-ai-sinhala](https://github.com/primeodin/jay-ai-sinhala) | Friends 70+ learning GitHub + AI — [live](https://primeodin.github.io/jay-ai-sinhala/) |
 
-Coming next on the weekday cadence: RAG starter → tool agent → prompt lab → embeddings → vision → memory → shop-skill explainer.
+Daily AI builds already shipped: [first-commit-ai](https://github.com/primeodin/first-commit-ai) · [notes-rag](https://github.com/primeodin/notes-rag) · [tiny-bpe-tokenizer](https://github.com/primeodin/tiny-bpe-tokenizer). Next on the weekday cadence: tiny tool-calling agent → prompt lab → embeddings → vision → memory → shop-skill explainer.
 
-Good first issues: [#1](https://github.com/primeodin/camera-selector/issues/1) start-here Frigate walkthrough, [#2](https://github.com/primeodin/camera-selector/issues/2) keyboard + focus a11y, [#3](https://github.com/primeodin/camera-selector/issues/3) CONTRIBUTING.md. Profile forge: [github.com/primeodin](https://github.com/primeodin)
+## Help / good first issues
+
+Scoped tickets (now labeled `good first issue`):
+
+- [#1](https://github.com/primeodin/camera-selector/issues/1) — start-here Frigate walkthrough (`docs/`)
+- [#2](https://github.com/primeodin/camera-selector/issues/2) — keyboard + focus a11y on planner controls
+- [#3](https://github.com/primeodin/camera-selector/issues/3) — `CONTRIBUTING.md` for planner engine + Pages deploy
+
+Claim one in a comment. Profile forge: [github.com/primeodin](https://github.com/primeodin)
