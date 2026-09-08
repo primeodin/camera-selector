@@ -120,10 +120,11 @@ Weekday cadence, in order: chat CLI → RAG → tokenizer → tool agent (shippe
 
 ## Help / good first issues
 
-Scoped tickets (now labeled `good first issue`):
+How to fork, install, prove the wiring, and open a small PR: see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+
+Scoped tickets live in [Issues](https://github.com/primeodin/camera-selector/issues):
 
 - [#1](https://github.com/primeodin/camera-selector/issues/1) — start-here Frigate walkthrough (`docs/`)
 - [#2](https://github.com/primeodin/camera-selector/issues/2) — keyboard + focus a11y on planner controls
-- [#3](https://github.com/primeodin/camera-selector/issues/3) — `CONTRIBUTING.md` for planner engine + Pages deploy
 
 Claim one in a comment. Profile forge: [github.com/primeodin](https://github.com/primeodin)
